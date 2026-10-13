@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RelyJW</title>
+<style>
+:root{--bg:#0f1117;--bg2:#161b22;--card:#1c2128;--hover:#262c36;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--dim:#6e7681;--primary:#6e8efb;--primary2:#5a7af0;--soft:rgba(110,142,251,.12);--danger:#f85149;--r:12px;--rs:8px;--font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:0 16px}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-weight:600;font-size:1.1rem}
+.logo svg{width:22px;height:22px;color:var(--primary)}
+.nav-btn{background:0 0;border:none;color:var(--muted);font:500 .9rem var(--font);padding:8px 12px;border-radius:var(--rs);cursor:pointer}
+.nav-btn:hover{color:var(--text);background:var(--hover)}
+.main{padding:24px 0 80px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px}
+.card-current{border-color:var(--primary);background:linear-gradient(135deg,var(--card),rgba(110,142,251,.06))}
+.badge{display:inline-block;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:3px 8px;border-radius:4px;background:var(--soft);color:var(--primary);margin-bottom:8px}
+.week-title{font-size:1.25rem;font-weight:600;margin-bottom:4px}
+.week-sub{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+.doc-sec{margin-top:16px}
+.doc-sec-title{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);margin-bottom:10px}
+.doc-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);margin-bottom:8px;gap:12px}
+.doc-info{display:flex;align-items:center;gap:10px;min-width:0}
+.doc-icon{width:34px;height:34px;border-radius:8px;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--primary);flex-shrink:0}
+.doc-icon svg{width:16px;height:16px}
+.doc-name{font-weight:500;font-size:.92rem}
+.doc-status{font-size:.78rem;color:var(--dim)}
+.doc-actions{display:flex;gap:6px;flex-shrink:0}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:var(--rs);font:500 .82rem var(--font);border:none;cursor:pointer;text-decoration:none;transition:.15s}
+.btn svg{width:15px;height:15px}
+.btn-p{background:var(--primary);color:#fff}.btn-p:hover{background:var(--primary2)}
+.btn-s{background:var(--hover);color:var(--text);border:1px solid var(--border)}.btn-s:hover{background:var(--border)}
+.btn-d{background:0 0;color:var(--danger);border:1px solid var(--danger)}
+.btn:disabled,.btn[disabled]{opacity:.4;pointer-events:none}
+.week-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;color:inherit;text-decoration:none}
+.week-item:hover{border-color:var(--primary);background:var(--hover)}
+.form-g{margin-bottom:16px}
+.form-l{display:block;font-size:.82rem;font-weight:500;color:var(--muted);margin-bottom:5px}
+.form-i{width:100%;padding:11px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font:1rem var(--font)}
+.form-i:focus{outline:none;border-color:var(--primary)}
+.file-w{position:relative;border:1px dashed var(--border);border-radius:var(--rs);padding:16px;text-align:center;background:var(--bg2)}
+.file-w input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.file-n{font-size:.8rem;color:var(--muted);margin-top:6px}
+.admin-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.page-t{font-size:1.35rem;font-weight:600}
+.empty{text-align:center;padding:50px 16px;color:var(--muted)}
+.empty svg{width:44px;height:44px;margin-bottom:12px;opacity:.4}
+.wa{position:fixed;bottom:22px;right:22px;width:52px;height:52px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 14px rgba(37,211,102,.4);z-index:90}
+.wa svg{width:26px;height:26px}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+@media(max-width:560px){
+  .doc-row{flex-direction:column;align-items:flex-start}
+  .doc-actions{width:100%}
+  .doc-actions .btn{flex:1;justify-content:center}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/" class="logo" onclick="showHome();return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>RelyJW</span>
+      </a>
+      <button class="nav-btn" onclick="showAdmin()">Admin</button>
+    </div>
+  </header>
+  <main class="main"><div class="container" id="content"><div class="loading">Loading...</div></div></main>
+  <a href="https://wa.me/2348129961562" target="_blank" rel="noopener" class="wa" title="WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+</div>
+<script>
+const S={weeks:[],currentId:null,currentLabel:'',isAdmin:false};
+const ic={
+  file:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  empty:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'
+};
+async function api(u,o={}){const r=await fetch(u,{headers:{'Content-Type':'application/json',...(o.headers||{})},...o});return r.json()}
+async function load(){const d=await api('/api/weeks');S.weeks=d.weeks||[];S.currentId=d.currentWeekId;S.currentLabel=d.currentWeekLabel}
+async function check(){const d=await api('/api/admin/check');S.isAdmin=d.isAdmin}
+function set(h){document.getElementById('content').innerHTML=h}
+function pdfUrl(weekId,type){return `/api/pdf/${weekId}/${type}`}
+function docRow(name,weekId,type,hasFile){
+  const url=hasFile?pdfUrl(weekId,type):'#';
+  return `<div class="doc-row"><div class="doc-info"><div class="doc-icon">${ic.file}</div><div><div class="doc-name">${name}</div><div class="doc-status">${hasFile?'Available':'Not uploaded'}</div></div></div><div class="doc-actions"><a class="btn btn-s" ${hasFile?`href="${url}" target="_blank"`:'disabled'}>${ic.eye} View</a><a class="btn btn-p" ${hasFile?`href="${url}" download="${type}.pdf"`:'disabled'}>${ic.dl} Download</a></div></div>`;
+}
+function renderWeek(w){
+  const cur=w.id===S.currentId;
+  return `<div class="card ${cur?'card-current':''}">${cur?'<div class="badge">Current Week</div>':''}<h1 class="week-title">${w.label}</h1><p class="week-sub">Meeting materials</p>
+  <div class="doc-sec"><div class="doc-sec-title">Life and Ministry</div>${docRow('Main Answers',w.id,'lmMain',!!w.lmMain)}${docRow('Congregation Bible Study',w.id,'lmCbs',!!w.lmCbs)}</div>
+  <div class="doc-sec"><div class="doc-sec-title">Watchtower Study</div>${docRow('Watchtower Answers',w.id,'watchtower',!!w.watchtower)}</div></div>
+  <button class="btn btn-s" onclick="showHome()" style="margin-top:8px">Back</button>`;
+}
+function renderHome(){
+  let h='';
+  const cur=S.weeks.find(w=>w.id===S.currentId);
+  if(cur){h+=`<div class="card card-current" style="cursor:pointer" onclick="showWeek('${cur.id}')"><div class="badge">Current Week</div><h2 class="week-title">${cur.label}</h2><p class="week-sub">Tap to view documents</p></div>`}
+  else{h+=`<div class="card card-current"><div class="badge">Current Week</div><h2 class="week-title">${S.currentLabel}</h2><p class="week-sub">No documents yet</p></div>`}
+  const others=S.weeks.filter(w=>w.id!==S.currentId);
+  if(others.length){h+=`<p style="font-size:.8rem;font-weight:600;color:var(--dim);margin:24px 0 10px;text-transform:uppercase;letter-spacing:.04em">All Weeks</p>`;
+    others.forEach(w=>{h+=`<a class="week-item" onclick="showWeek('${w.id}');return false" href="#"><span style="font-weight:500">${w.label}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>`})}
+  if(!S.weeks.length)h+=`<div class="empty">${ic.empty}<p>No documents yet</p></div>`;
+  return h;
+}
+function renderLogin(){
+  return `<div class="card" style="max-width:380px;margin:30px auto"><div style="text-align:center;margin-bottom:20px"><div class="doc-icon" style="margin:0 auto 10px;width:44px;height:44px">${ic.lock}</div><h2 class="page-t">Admin Login</h2></div>
+  <form onsubmit="login(event)"><div class="form-g"><label class="form-l">Password</label><input type="password" class="form-i" id="pw" required autofocus></div>
+  <button type="submit" class="btn btn-p" style="width:100%;justify-content:center;padding:11px">Sign In</button></form>
+  <p id="err" style="color:var(--danger);font-size:.85rem;margin-top:10px;text-align:center;display:none"></p></div>`;
+}
+function renderAdmin(){
+  let h=`<div class="admin-h"><h1 class="page-t">Admin</h1><div style="display:flex;gap:8px"><button class="btn btn-p" onclick="showAdd()">${ic.plus} Add Week</button><button class="btn btn-s" onclick="logout()">Logout</button></div></div>`;
+  if(!S.weeks.length)h+=`<div class="empty">${ic.empty}<p>No weeks yet</p></div>`;
+  else S.weeks.forEach(w=>{const n=[w.lmMain,w.lmCbs,w.watchtower].filter(Boolean).length;
+    h+=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><div style="font-weight:600">${w.label}</div><div style="font-size:.82rem;color:var(--muted)">${n}/3 documents</div></div>
+    <div style="display:flex;gap:6px"><button class="btn btn-s" onclick="showEdit('${w.id}')">Edit</button><button class="btn btn-d" onclick="del('${w.id}')">${ic.trash}</button></div></div></div>`});
+  return h;
+}
+function renderForm(ex=null){
+  return `<div class="card"><h2 class="page-t" style="margin-bottom:18px">${ex?'Edit Week':'Add Week'}</h2>
+  <form onsubmit="save(event)" enctype="multipart/form-data">
+  <div class="form-g"><label class="form-l">Week Start (Monday)</label><input type="date" class="form-i" id="startDate" required value="${ex?ex.startDate:''}" ${ex?'readonly':''}></div>
+  <div class="form-g"><label class="form-l">Life & Ministry — Main Answers (PDF)</label><div class="file-w"><input type="file" id="lmMain" accept="application/pdf" onchange="fn(this,'n1')"><div>Tap to choose PDF</div><div class="file-n" id="n1">${ex&&ex.lmMain?'File uploaded':'No file'}</div></div></div>
+  <div class="form-g"><label class="form-l">Life & Ministry — Congregation Bible Study (PDF)</label><div class="file-w"><input type="file" id="lmCbs" accept="application/pdf" onchange="fn(this,'n2')"><div>Tap to choose PDF</div><div class="file-n" id="n2">${ex&&ex.lmCbs?'File uploaded':'No file'}</div></div></div>
+  <div class="form-g"><label class="form-l">Watchtower Study Answers (PDF)</label><div class="file-w"><input type="file" id="watchtower" accept="application/pdf" onchange="fn(this,'n3')"><div>Tap to choose PDF</div><div class="file-n" id="n3">${ex&&ex.watchtower?'File uploaded':'No file'}</div></div></div>
+  <div style="display:flex;gap:8px;margin-top:20px"><button type="submit" class="btn btn-p">Save</button><button type="button" class="btn btn-s" onclick="showAdmin()">Cancel</button></div></form></div>`;
+}
+async function showHome(){set('<div class="loading">Loading...</div>');await load();set(renderHome())}
+async function showWeek(id){set('<div class="loading">Loading...</div>');const w=await api('/api/weeks/'+id);set(renderWeek(w))}
+async function showAdmin(){await check();if(!S.isAdmin){set(renderLogin());return}set('<div class="loading">Loading...</div>');await load();set(renderAdmin())}
+function showAdd(){set(renderForm())}
+async function showEdit(id){const w=await api('/api/weeks/'+id);set(renderForm(w))}
+function fn(i,t){document.getElementById(t).textContent=i.files[0]?i.files[0].name:'No file'}
+async function login(e){e.preventDefault();const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('pw').value})});const d=await r.json();if(d.success){S.isAdmin=true;showAdmin()}else{const el=document.getElementById('err');el.textContent=d.error||'Failed';el.style.display='block'}}
+async function logout(){await api('/api/admin/logout',{method:'POST'});S.isAdmin=false;showHome()}
+async function save(e){e.preventDefault();const fd=new FormData();const sd=document.getElementById('startDate').value;fd.append('startDate',sd);
+  const a=document.getElementById('lmMain').files[0],b=document.getElementById('lmCbs').files[0],c=document.getElementById('watchtower').files[0];
+  if(a)fd.append('lmMain',a);if(b)fd.append('lmCbs',b);if(c)fd.append('watchtower',c);
+  const r=await fetch('/api/admin/weeks',{method:'POST',body:fd});const d=await r.json();if(d.success)showAdmin();else alert(d.error||'Failed')}
+async function del(id){if(!confirm('Delete this week?'))return;await fetch('/api/admin/weeks/'+id,{method:'DELETE'});showAdmin()}
+document.addEventListener('DOMContentLoaded',showHome);
+</script>
+</body>
+</html>
